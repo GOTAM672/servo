@@ -1709,6 +1709,10 @@ impl ScriptThread {
         }
 
         for (_, document) in self.documents.borrow().iter() {
+            document.maybe_mark_animating_nodes_as_dirty();
+        }
+
+        for (_, document) in self.documents.borrow().iter() {
             document.animations().send_pending_events(document.window());
         }
     }
@@ -3012,8 +3016,7 @@ impl ScriptThread {
             document.run_the_animation_frame_callbacks();
         }
         if tick_type.contains(AnimationTickType::CSS_ANIMATIONS_AND_TRANSITIONS) {
-            document.animations().mark_animating_nodes_as_dirty();
-            document.window().add_pending_reflow();
+            document.maybe_mark_animating_nodes_as_dirty();
         }
     }
 
