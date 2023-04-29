@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Background Clip Follows Rounded Corner</title>
+<link rel="author" title="Oriol Brufau" href="mailto:obrufau@igalia.com">
+<meta name="fuzzy" content="maxDifference=0-75; totalPixels=0-175">
+<link rel="match" href="../reference/ref-filled-green-200px-square.html">
+<link rel="help" href="https://drafts.csswg.org/css-backgrounds-3/#corner-clipping">
+<link rel="help" href="https://github.com/servo/servo/issues/29685">
+<style>
+#background {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: green;
+}
+#test {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border: 50px solid green;
+  border-radius: 100px 150px 200px 250px / 350px;
+  background: linear-gradient(green, green) padding-box,
+              linear-gradient(red, red) no-repeat;
+}
+</style>
+<p>Test passes if there is a filled green square and <strong>no red</strong>.</p>
+<div id="background"></div>
+<div id="test"></div>
