@@ -322,12 +322,25 @@ impl<'a> BuilderForBoxFragment<'a> {
                 )
             };
             let b = fragment.style.get_border();
-            wr::BorderRadius {
+            let mut r = wr::BorderRadius {
                 top_left: corner(&b.border_top_left_radius),
                 top_right: corner(&b.border_top_right_radius),
                 bottom_right: corner(&b.border_bottom_right_radius),
                 bottom_left: corner(&b.border_bottom_left_radius),
+            };
+            // Normalize radii that add up to > 100%.
+            // https://www.w3.org/TR/css-backgrounds-3/#corner-overlap
+            let f = (border_rect.width() / (r.top_left.width + r.top_right.width))
+                .min(border_rect.width() / (r.bottom_left.width + r.bottom_right.width))
+                .min(border_rect.height() / (r.top_left.height + r.bottom_left.height))
+                .min(border_rect.height() / (r.top_right.height + r.bottom_right.height));
+            if f < 1.0 {
+                r.top_left *= f;
+                r.top_right *= f;
+                r.bottom_right *= f;
+                r.bottom_left *= f;
             }
+            r
         };
 
         Self {
